@@ -41,3 +41,10 @@ services:
       dockerfile: ./composer.dockerfile
     volumes:
       - ./:/app
+
+  haproxy:
+    image: haproxy
+    volumes:
+      - ./app/haproxy:/usr/local/etc/haproxy/
+    ports:
+      - "8082:8080"
