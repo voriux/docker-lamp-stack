@@ -31,3 +31,10 @@ Docker LAMP stack for PHP development
 
 ## Add record to /etc/hosts file
 
+
+## Add required permissions for folders
+
+Run commands on host:
+
+    sudo setfacl -R -m u:www-data:rwX -m u:`whoami`:rwX var
+    sudo setfacl -dR -m u:www-data:rwX -m u:`whoami`:rwX var
