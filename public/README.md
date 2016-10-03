@@ -1,68 +1,107 @@
-Symfony Standard Edition
-========================
+# Composer template for Drupal projects
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
+[![Build Status](https://travis-ci.org/drupal-composer/drupal-project.svg?branch=8.x)](https://travis-ci.org/drupal-composer/drupal-project)
 
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
+This project template should provide a kickstart for managing your site
+dependencies with [Composer](https://getcomposer.org/).
 
-What's inside?
---------------
+If you want to know how to use it as replacement for
+[Drush Make](https://github.com/drush-ops/drush/blob/master/docs/make.md) visit
+the [Documentation on drupal.org](https://www.drupal.org/node/2471553).
 
-The Symfony Standard Edition is configured with the following defaults:
+## Usage
 
-  * An AppBundle you can use to start coding;
+First you need to [install composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
 
-  * Twig as the only configured template engine;
+> Note: The instructions below refer to the [global composer installation](https://getcomposer.org/doc/00-intro.md#globally).
+You might need to replace `composer` with `php composer.phar` (or similar) 
+for your setup.
 
-  * Doctrine ORM/DBAL;
+After that you can create the project:
 
-  * Swiftmailer;
+```
+composer create-project drupal-composer/drupal-project:8.x-dev some-dir --stability dev --no-interaction
+```
 
-  * Annotations enabled for everything.
+With `composer require ...` you can download new dependencies to your 
+installation.
 
-It comes pre-configured with the following bundles:
+```
+cd some-dir
+composer require drupal/devel:8.*
+```
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+The `composer create-project` command passes ownership of all files to the 
+project that is created. You should create a new git repository, and commit 
+all files not excluded by the .gitignore file.
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+## What does the template do?
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+When installing the given `composer.json` some tasks are taken care of:
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+* Drupal will be installed in the `web`-directory.
+* Autoloader is implemented to use the generated composer autoloader in `vendor/autoload.php`,
+  instead of the one provided by Drupal (`web/vendor/autoload.php`).
+* Modules (packages of type `drupal-module`) will be placed in `web/modules/contrib/`
+* Theme (packages of type `drupal-theme`) will be placed in `web/themes/contrib/`
+* Profiles (packages of type `drupal-profile`) will be placed in `web/profiles/contrib/`
+* Creates default writable versions of `settings.php` and `services.yml`.
+* Creates `sites/default/files`-directory.
+* Latest version of drush is installed locally for use at `vendor/bin/drush`.
+* Latest version of DrupalConsole is installed locally for use at `vendor/bin/drupal`.
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+## Updating Drupal Core
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+This project will attempt to keep all of your Drupal Core files up-to-date; the 
+project [drupal-composer/drupal-scaffold](https://github.com/drupal-composer/drupal-scaffold) 
+is used to ensure that your scaffold files are updated every time drupal/core is 
+updated. If you customize any of the "scaffolding" files (commonly .htaccess), 
+you may need to merge conflicts if any of your modfied files are updated in a 
+new release of Drupal core.
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+Follow the steps below to update your core files.
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+1. Run `composer update drupal/core --with-dependencies` to update Drupal Core and its dependencies.
+1. Run `git diff` to determine if any of the scaffolding files have changed. 
+   Review the files for any changes and restore any customizations to 
+  `.htaccess` or `robots.txt`.
+1. Commit everything all together in a single commit, so `web` will remain in
+   sync with the `core` when checking out branches or running `git bisect`.
+1. In the event that there are non-trivial conflicts in step 2, you may wish 
+   to perform these steps on a branch, and use `git merge` to combine the 
+   updated core files with your customized files. This facilitates the use 
+   of a [three-way merge tool such as kdiff3](http://www.gitshah.com/2010/12/how-to-setup-kdiff-as-diff-tool-for-git.html). This setup is not necessary if your changes are simple; 
+   keeping all of your modifications at the beginning or end of the file is a 
+   good strategy to keep merges easy.
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+## Generate composer.json from existing project
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+With using [the "Composer Generate" drush extension](https://www.drupal.org/project/composer_generate)
+you can now generate a basic `composer.json` file from an existing project. Note
+that the generated `composer.json` might differ from this project's file.
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+## FAQ
 
-Enjoy!
+### Should I commit the contrib modules I download
 
-[1]:  https://symfony.com/doc/3.0/book/installation.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.0/book/doctrine.html
-[8]:  https://symfony.com/doc/3.0/book/templating.html
-[9]:  https://symfony.com/doc/3.0/book/security.html
-[10]: https://symfony.com/doc/3.0/cookbook/email.html
-[11]: https://symfony.com/doc/3.0/cookbook/logging/monolog.html
-[13]: https://symfony.com/doc/3.0/bundles/SensioGeneratorBundle/index.html
+Composer recommends **no**. They provide [argumentation against but also 
+workrounds if a project decides to do it anyway](https://getcomposer.org/doc/faqs/should-i-commit-the-dependencies-in-my-vendor-directory.md).
+
+### How can I apply patches to downloaded modules?
+
+If you need to apply patches (depending on the project being modified, a pull 
+request is often a better solution), you can do so with the 
+[composer-patches](https://github.com/cweagans/composer-patches) plugin.
+
+To add a patch to drupal module foobar insert the patches section in the extra 
+section of composer.json:
+```json
+"extra": {
+    "patches": {
+        "drupal/foobar": {
+            "Patch description": "URL to patch"
+        }
+    }
+}
+```
