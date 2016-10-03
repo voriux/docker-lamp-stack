@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:7.1-fpm
 
 RUN apt-get update && apt-get install -y \
     apt-utils \
@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure intl
 
-RUN docker-php-ext-enable opcache curl
+RUN docker-php-ext-enable opcache
 
-RUN docker-php-ext-install pdo_mysql gd mcrypt intl
+RUN docker-php-ext-install pdo_mysql curl gd mcrypt intl
 
 COPY app/php/php.ini /usr/local/etc/php/
 
