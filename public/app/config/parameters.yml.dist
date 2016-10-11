@@ -2,12 +2,11 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
-    database_host:     mysqlserver
+    database_host:     127.0.0.1
     database_port:     ~
-    database_name:     my_db
-    database_user:     my_db
-    database_password: password
-    database_url: mysql://my_db:password@mysqlserver:3306/my_db
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
@@ -18,4 +17,3 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
-    locale: en
