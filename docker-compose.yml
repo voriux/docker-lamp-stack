@@ -6,7 +6,7 @@ volumes:
 
 services:
   nginx:
-    image: nginx
+    image: nginx:1.11.4
     volumes:
       - ./:/var/www:ro
       - ./app/nginx:/etc/nginx/conf.d
@@ -24,27 +24,19 @@ services:
       - mysqlserver
 
   mysqlserver:
-    image: mysql
+    image: mysql:5.7.15
     environment:
-      MYSQL_DATABASE: my_db
-      MYSQL_USER: my_db
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ${MYSQLSERVER_MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQLSERVER_MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQLSERVER_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQLSERVER_MYSQL_ROOT_PASSWORD}
     volumes:
       - mysqldata:/var/lib/mysql
       - ./app/mysql:/etc/mysql/conf.d
 
-  composer:
-    entrypoint: /bin/true
-    build:
-      context: ./
-      dockerfile: ./composer.dockerfile
-    volumes:
-      - ./:/app
-
-  haproxy:
-    image: haproxy
-    volumes:
-      - ./app/haproxy:/usr/local/etc/haproxy/
-    ports:
-      - "8082:8080"
+#  haproxy:
+#    image: haproxy
+#    volumes:
+#      - ./app/haproxy:/usr/local/etc/haproxy/
+#    ports:
+#      - "8082:8080"
