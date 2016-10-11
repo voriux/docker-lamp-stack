@@ -7,6 +7,7 @@ volumes:
 services:
   nginx:
     image: nginx:1.11.4
+
     volumes:
       - ./:/var/www:ro
       - ./app/nginx:/etc/nginx/conf.d
@@ -18,6 +19,13 @@ services:
       context: ./
       dockerfile: ./phpserver.dockerfile
     working_dir: /var/www
+    environment:
+      APPLICATION_ENVIRONMENT: ${PHPSERVER_APP_ENV}
+      SYMFONY__DATABASE__USER: ${MYSQLSERVER_MYSQL_USER}
+      SYMFONY__DATABASE__PASSWORD: ${MYSQLSERVER_MYSQL_PASSWORD}
+      SYMFONY__DATABASE__HOST: ${MYSQLSERVER_MYSQL_HOST}
+      SYMFONY__DATABASE__NAME: ${MYSQLSERVER_MYSQL_DATABASE}
+      SYMFONY__DATABASE__PORT: ${MYSQLSERVER_MYSQL_PORT}
     volumes:
       - ./:/var/www/
     links:

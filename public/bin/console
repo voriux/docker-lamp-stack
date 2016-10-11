@@ -9,6 +9,14 @@ use Symfony\Component\Debug\Debug;
 // read http://symfony.com/doc/current/book/installation.html#configuration-and-setup for more information
 //umask(0000);
 
+$envVariables = parse_ini_file(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env');
+
+$_SERVER['SYMFONY__DATABASE__USER'] = $envVariables['MYSQLSERVER_MYSQL_USER'];
+$_SERVER['SYMFONY__DATABASE__PASSWORD'] = $envVariables['MYSQLSERVER_MYSQL_PASSWORD'];
+$_SERVER['SYMFONY__DATABASE__HOST'] = $envVariables['MYSQLSERVER_MYSQL_IP'];
+$_SERVER['SYMFONY__DATABASE__NAME'] = $envVariables['MYSQLSERVER_MYSQL_DATABASE'];
+$_SERVER['SYMFONY__DATABASE__PORT'] = $envVariables['MYSQLSERVER_MYSQL_PORT'];
+
 set_time_limit(0);
 
 /** @var Composer\Autoload\ClassLoader $loader */
