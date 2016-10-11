@@ -20,6 +20,6 @@ RUN docker-php-ext-enable opcache
 
 RUN docker-php-ext-install pdo_mysql curl gd mcrypt intl
 
-COPY app/php/php.ini /usr/local/etc/php/
+#COPY app/php/php.ini /usr/local/etc/php/
 
 COPY ./ /var/www
